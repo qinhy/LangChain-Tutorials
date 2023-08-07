@@ -64,7 +64,8 @@ def llm_thread(g, prompt):
         memory.append(HumanMessage(content=prompt))
         chat(memory)
         # chat([SystemMessage(content="You are a helpful assistant."),HumanMessage(content=prompt)])
-
+    except Exception as e:
+        g.send(str(e))
     finally:
         memory.append(AIMessage(content=''.join(g.msg)))
         g.close()
@@ -84,7 +85,7 @@ async def stream():
     )
 
 @app.post("/ask")
-def ask(body: dict):
+def ask(body: dict={'question':'How are you?'}):
     return StreamingResponse(chat(body['question']), media_type="text/event-stream")
 
 @app.get("/")
